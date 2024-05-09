@@ -3,6 +3,8 @@ package org.cinema.api.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.util.UUID;
+
 @JsonPropertyOrder( {"row", "column", "price"} )
 public class Seat {
 
@@ -11,6 +13,7 @@ public class Seat {
     private int price;
     @JsonIgnore private boolean purchased;
     @JsonIgnore private String customerName;
+    @JsonIgnore private UUID token;
 
     public Seat(int row, int column, int price) {
         this.row = row;
@@ -32,6 +35,9 @@ public class Seat {
     }
     public boolean isPurchased() {
         return purchased;
+    }
+    public UUID getToken() {
+        return token;
     }
 
     public void setPurchased() {
