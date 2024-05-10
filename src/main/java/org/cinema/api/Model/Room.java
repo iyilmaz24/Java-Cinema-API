@@ -1,12 +1,11 @@
 package org.cinema.api.Model;
 
+import org.cinema.api.Exception.IncorrectTokenException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @JsonPropertyOrder( {"rows", "columns", "seats"} )
 public class Room {
@@ -54,6 +53,18 @@ public class Room {
     }
     public int getColCount() {
         return colCount;
+    }
+
+    public Optional<Seat> findByToken(UUID token) {
+        return Arrays.stream(seats).flatMap(Arrays::stream)
+                .filter(seat -> (seat.isPurchased() &&
+                        seat.getToken().equals(token))).findFirst();
+    }
+
+    public void resetSeat(Seat seat) {
+        seat.setPurchased(false);
+        seat.setToken(null);
+        seat.setCustomerName(null);
     }
 
 }

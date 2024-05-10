@@ -1,5 +1,6 @@
 package org.cinema.api.Controller;
 
+import org.cinema.api.DTO.TicketDTO;
 import org.cinema.api.Exception.AlreadyPurchasedException;
 import org.cinema.api.Exception.InvalidIndexException;
 import org.cinema.api.Model.Seat;
@@ -24,7 +25,7 @@ public class PurchaseController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Seat> purchase(@RequestBody Seat seat) {
+    public ResponseEntity<TicketDTO> purchase(@RequestBody Seat seat) {
         if(seat.getRow() < 0 || seat.getColumn() < 0) {
             throw new InvalidIndexException("The number of a row or a column is out of bounds!");
         }
@@ -34,8 +35,8 @@ public class PurchaseController {
             throw new AlreadyPurchasedException("The ticket has been already purchased!");
         }
 
-        currentSeat.setPurchased();
-        return new ResponseEntity<>(currentSeat, HttpStatus.OK);
+        TicketDTO ticket = cinemaService.setPurchased(currentSeat);
+        return new ResponseEntity<>(ticket, HttpStatus.OK);
     }
 
 }
