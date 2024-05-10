@@ -1,6 +1,8 @@
 package org.cinema.api.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.UUID;
@@ -33,15 +35,22 @@ public class Seat {
     public int getPrice() {
         return price;
     }
+
     public boolean isPurchased() {
         return purchased;
     }
-    public UUID getToken() {
-        return token;
-    }
-
     public void setPurchased() {
         this.purchased = true;
+    }
+    public void setPurchased(boolean status) {
+        this.purchased = status;
+    }
+
+    public void setToken(UUID token) {
+        this.token = token;
+    }
+    public UUID getToken() {
+        return token;
     }
 
     public String getCustomerName() {

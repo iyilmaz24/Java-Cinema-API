@@ -10,7 +10,7 @@ import java.util.UUID;
 @JsonPropertyOrder( {"token", "ticket" } )
 public class TicketDTO {
 
-    @JsonPropertyOrder("token")
+    @JsonProperty("token")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private UUID token;
 
@@ -25,14 +25,6 @@ public class TicketDTO {
         this.ticket = new Seat(seat.getRow(), seat.getColumn(), seat.getPrice());
     }
 
-    public int getRow() {
-        return ticket.getRow();
-    }
-    public int getColumn() {
-        return ticket.getColumn();
-    }
-    public int getPrice() {
-        return ticket.getPrice();
-    }
+    public TicketDTO() {;}
 
 }
