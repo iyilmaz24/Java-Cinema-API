@@ -11,14 +11,21 @@ import org.springframework.web.server.MethodNotAllowedException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({AlreadyPurchasedException.class, InvalidIndexException.class, IncorrectTokenException.class})
-    public ResponseEntity<ErrorObject> handleAlreadyPurchasedException(RuntimeException ex) {
+    public ResponseEntity<ErrorObject> handleRuntimeExceptions(RuntimeException ex) {
 
         ErrorObject error = new ErrorObject(HttpStatus.BAD_REQUEST, ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({IncorrectPasswordException.class})
+    public ResponseEntity<ErrorObject> handlePasswordExceptions(RuntimeException ex) {
+
+        ErrorObject error = new ErrorObject(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler( {MethodNotAllowedException.class} )
-    public ResponseEntity<ErrorObject> handleMethodNotAllowedException(HttpRequestMethodNotSupportedException ex) {
+    public ResponseEntity<ErrorObject> handleMethodNotAllowedExceptions(HttpRequestMethodNotSupportedException ex) {
 
         ErrorObject error = new ErrorObject(HttpStatus.BAD_REQUEST, ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);

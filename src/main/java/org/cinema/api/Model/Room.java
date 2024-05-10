@@ -2,6 +2,7 @@ package org.cinema.api.Model;
 
 import org.cinema.api.Exception.IncorrectTokenException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -53,6 +54,9 @@ public class Room {
     }
     public int getColCount() {
         return colCount;
+    }
+    @JsonIgnore public int getTotalSeats() {
+        return rowCount * colCount;
     }
 
     public Optional<Seat> findByToken(UUID token) {
