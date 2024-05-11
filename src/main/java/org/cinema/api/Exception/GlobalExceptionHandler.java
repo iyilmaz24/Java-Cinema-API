@@ -10,7 +10,8 @@ import org.springframework.web.server.MethodNotAllowedException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({AlreadyPurchasedException.class, InvalidIndexException.class, IncorrectTokenException.class})
+    @ExceptionHandler({AlreadyPurchasedException.class, InvalidIndexException.class,
+            IncorrectTokenException.class, NoResultsFoundException.class})
     public ResponseEntity<ErrorObject> handleRuntimeExceptions(RuntimeException ex) {
 
         ErrorObject error = new ErrorObject(HttpStatus.BAD_REQUEST, ex.getMessage());
