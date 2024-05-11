@@ -4,17 +4,32 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 
-@JsonPropertyOrder({"income", "available", "purchased"})
+@JsonPropertyOrder({"totalSeats", "availableSeats", "purchasedSeats", "totalRevenue"})
 public class StatsDTO {
 
-    @JsonProperty("income") private int income;
-    @JsonProperty("available") private int availableSeats;
-    @JsonProperty("purchased") int soldSeats;
+    @JsonProperty("totalSeats") int totalSeats;
+    @JsonProperty("availableSeats") private int availableSeats;
+    @JsonProperty("purchasedSeats") int purchasedSeats;
+    @JsonProperty("totalRevenue") private int revenue;
 
-    public StatsDTO(int income, int availableSeats, int soldSeats) {
-        this.income = income;
+    public StatsDTO(int totalSeats, int availableSeats, int purchasedSeats, int revenue) {
+        this.totalSeats = totalSeats;
         this.availableSeats = availableSeats;
-        this.soldSeats = soldSeats;
+        this.purchasedSeats = purchasedSeats;
+        this.revenue = revenue;
+    }
+
+    public int getTotalSeats() {
+        return totalSeats;
+    }
+    public int getAvailableSeats() {
+        return availableSeats;
+    }
+    public int getPurchasedSeats() {
+        return purchasedSeats;
+    }
+    public int getRevenue() {
+        return revenue;
     }
 
 }

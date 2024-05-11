@@ -26,13 +26,8 @@ public class StatsController {
 
     @GetMapping("")
     public ResponseEntity<StatsDTO> stats(@RequestParam(required = false) String password) { // self-handle exceptions
-        if(password == null) throw new IncorrectPasswordException("The password is wrong!");
-
-        Optional<StatsDTO> stats = this.cinemaService.getStats(password);
-        if (stats.isEmpty()) {
-            throw new IncorrectPasswordException("The password is wrong!");
-        }
-        return new ResponseEntity<>(stats.get(), HttpStatus.OK);
+        if(password == null || password.isBlank()) throw new IncorrectPasswordException("The password is not provided!");
+        return new ResponseEntity<>(this.cinemaService.getStats(password), HttpStatus.OK);
     }
 
 }

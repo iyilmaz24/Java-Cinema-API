@@ -1,6 +1,8 @@
 package org.cinema.api.DB;
 
+import org.cinema.api.DTO.StatsDTO;
 import org.cinema.api.Exception.NoResultsFoundException;
+import org.cinema.api.Model.Room;
 import org.cinema.api.Model.Seat;
 
 import javax.sql.DataSource;
@@ -10,6 +12,7 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +83,44 @@ public class DBClient {
                 }
                 result.add(newSeat);
             }
+            return result;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public StatsDTO getStatistics(String sqlString) {
+        StatsDTO result = null;
+        try(Connection connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+        ) {
+            ResultSet queryResults = statement.executeQuery(sqlString);
+            queryResults.next();
+
+            int totalSeats, availableSeats, purchasedSeats, revenue;
+            totalSeats = queryResults.getInt("total_seats"); availableSeats = queryResults.getInt("available_seats");
+            purchasedSeats = queryResults.getInt("sold_seats"); revenue = queryResults.getInt("total_revenue");
+
+            result = new StatsDTO(totalSeats, availableSeats, purchasedSeats, revenue);
+            return result;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public Room getRoomInfo(String sqlStringStats, String sqlStringSeats) {
+        Room result = null;
+        try(Connection connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+        ) {
+            StatsDTO statistics = getStatistics(sqlStringStats);
+            List<Seat> seats = selectMultiple(sqlStringSeats);
+
+            result = new Room(statistics, seats);
             return result;
         }
         catch (SQLException e) {

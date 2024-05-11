@@ -25,7 +25,7 @@ public class SeatsController {
 
     @GetMapping("")
     public ResponseEntity<Room> seats() {
-        return new ResponseEntity<>(cinemaService.getCinemaRoom(), HttpStatus.OK);
+        return new ResponseEntity<>(cinemaService.getRoomInfo(), HttpStatus.OK);
     }
 
 }
