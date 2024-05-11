@@ -21,7 +21,20 @@ public class Seat {
         this.row = row;
         this.column = column;
         this.price = price;
-        this.purchased = false;
+    }
+
+    public Seat(int row, int column, int price, boolean purchased) {
+        this.row = row;
+        this.column = column;
+        this.price = price;
+        this.purchased = purchased;
+    }
+
+    public Seat(int row, int column, int price, boolean purchased, String firstName, String token) {
+        this.row = row;
+        this.column = column;
+        this.price = price;
+        this.purchased = purchased;
     }
 
     public Seat() {;}
