@@ -25,13 +25,10 @@ public class ReturnController {
 
     @PostMapping("")
     public ResponseEntity<TicketDTO> getReturn(@RequestBody Token token) {
-        Optional<Seat> foundSeat = cinemaService.findByToken(token.getToken());
-        if (foundSeat.isEmpty()) { // if Optional<Seat> has no value inside it
-            throw new IncorrectTokenException("Wrong token!");
-        }
+        Seat foundSeat = cinemaService.findByToken(token.getTokenString());
+        TicketDTO ticket = new TicketDTO(foundSeat);
 
-        TicketDTO ticket = new TicketDTO(foundSeat.get());
-        cinemaService.resetSeat(foundSeat.get());
+        cinemaService.refundSeatByToken(foundSeat.getToken());
         return new ResponseEntity<>(ticket, HttpStatus.OK);
     }
 

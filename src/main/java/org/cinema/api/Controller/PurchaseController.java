@@ -26,14 +26,8 @@ public class PurchaseController {
 
     @PostMapping("")
     public ResponseEntity<TicketDTO> purchase(@RequestBody Seat seat) {
-        if(seat.getRow() < 0 || seat.getColumn() < 0) {
-            throw new InvalidIndexException("The number of a row or a column is out of bounds!");
-        }
         Seat currentSeat = cinemaService.getSeat(seat.getRow(), seat.getColumn());
-
-        if (currentSeat.isPurchased()) {
-            throw new AlreadyPurchasedException("The ticket has been already purchased!");
-        }
+        if (currentSeat.isPurchased()) throw new AlreadyPurchasedException("The ticket has been already purchased!");
 
         TicketDTO ticket = cinemaService.setPurchased(currentSeat);
         return new ResponseEntity<>(ticket, HttpStatus.OK);

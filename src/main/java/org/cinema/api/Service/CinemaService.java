@@ -15,20 +15,11 @@ import static java.util.UUID.randomUUID;
 @Service
 public class CinemaService {
 
-    private final int ROWS = 9; private final int COLUMNS = 9;
-    private final int ROOM_ID = 1;
-//    Room cinema_room;
-
     RoomSeatDAO cinema_room;
 
     public CinemaService() {
         RoomSeatDAO cinema_room = new RoomSeatDAO();
-//        this.availableSeats = cinema_room.getTotalSeats();
     }
-
-//    public Room getCinemaRoom() {
-//        return cinema_room;
-//    }
 
     public Seat getSeat(int row, int col) {
 //        if(row > cinema_room.getRowCount() || col > cinema_room.getColCount()) {
@@ -39,19 +30,18 @@ public class CinemaService {
 
     public TicketDTO setPurchased(Seat seat) {
         UUID newToken = randomUUID();
-        seat.setToken(newToken);
-        seat.setPurchased();
-        this.income += seat.getPrice(); this.soldSeats += 1; this.availableSeats -= 1;
+        seat.setToken(String.valueOf(newToken)); seat.setPurchased();
+
+        cinema_room.sellSeatByRowColumn(seat.getCustomerFirstName(), String.valueOf(newToken), seat.getRow(), seat.getColumn());
         return new TicketDTO(seat, newToken); // calls the 2 arg purchase-specific constructor
     }
 
-    public Optional<Seat> findByToken(UUID token) {
-        return cinema_room.findByToken(token);
+    public Seat findByToken(String token) {
+        return cinema_room.getSeatByToken(token);
     }
 
-    public void resetSeat(Seat seat) {
-        this.income -= seat.getPrice(); this.soldSeats -= 1; this.availableSeats += 1;
-        cinema_room.resetSeat(seat);
+    public void refundSeatByToken(String token) {
+        cinema_room.refundSeatByToken(token);
     }
 
     public Room getRoomInfo() {

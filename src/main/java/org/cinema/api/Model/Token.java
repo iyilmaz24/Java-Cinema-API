@@ -1,5 +1,7 @@
 package org.cinema.api.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.UUID;
 
 public class Token {
@@ -12,8 +14,12 @@ public class Token {
 
     public Token() {;}
 
-    public UUID getToken() {
+    public UUID getTokenUUID() {
         return token;
+    }
+
+    @JsonIgnore public String getTokenString() {
+        return token.toString();
     }
 
 }

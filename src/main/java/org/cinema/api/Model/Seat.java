@@ -14,8 +14,8 @@ public class Seat {
     private int column;
     private int price;
     @JsonIgnore private boolean purchased;
-    @JsonIgnore private String customerName;
-    @JsonIgnore private UUID token;
+    @JsonIgnore private String customerFirstName;
+    @JsonIgnore private String token;
 
     public Seat(int row, int column, int price) {
         this.row = row;
@@ -59,18 +59,18 @@ public class Seat {
         this.purchased = status;
     }
 
-    public void setToken(UUID token) {
+    public void setToken(String token) {
         this.token = token;
     }
-    public UUID getToken() {
+    public String getToken() {
         return token;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getCustomerFirstName() {
+        return customerFirstName;
     }
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setCustomerFirstName(String customerFirstName) {
+        this.customerFirstName = customerFirstName;
     }
 
 }
