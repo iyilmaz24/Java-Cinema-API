@@ -70,7 +70,7 @@ public class DBClient {
                 Seat newSeat;
                 if(!token.isBlank()) {
                     if(firstName.isBlank()) {
-                        firstName = "";
+                        firstName = ""; // customer first name not required when purchasing a ticket/seat
                     }
                     newSeat = new Seat(row, column, price, purchased, firstName, token);
                 }
@@ -96,12 +96,19 @@ public class DBClient {
         try(Connection connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
         ) {
+//            ResultSet queryResults = statement.executeQuery(getTotalSeatsSQLString);
+//            queryResults.next();
+//
+//            int totalSeats = queryResults.getInt("total");
+
             ResultSet queryResults = statement.executeQuery(sqlString);
             queryResults.next();
 
-            int totalSeats, availableSeats, purchasedSeats, revenue;
-            totalSeats = queryResults.getInt("total_seats"); availableSeats = queryResults.getInt("available_seats");
-            purchasedSeats = queryResults.getInt("sold_seats"); revenue = queryResults.getInt("total_revenue");
+            int availableSeats, purchasedSeats, revenue, totalSeats;
+            totalSeats = queryResults.getInt("total_seats");
+            availableSeats = queryResults.getInt("available_seats");
+            purchasedSeats = queryResults.getInt("sold_seats");
+            revenue = queryResults.getInt("total_revenue");
 
             result = new StatsDTO(totalSeats, availableSeats, purchasedSeats, revenue);
             return result;
