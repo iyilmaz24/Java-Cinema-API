@@ -2,7 +2,6 @@ package org.cinema.api.DB;
 
 import org.cinema.api.Exception.NoResultsFoundException;
 import org.cinema.api.Model.Seat;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -11,17 +10,18 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class DBClient {
 
-//    private final Logger logger;
+    private final Logger logger;
     private final DataSource dataSource;
 
-//    @Autowired
     public DBClient(DataSource dataSource) {
         this.dataSource = dataSource;
-//        this.logger = logger;
+        this.logger = LoggerFactory.getLogger(DBClient.class);
     }
 
     public void runUpdate (String sqlString) {
@@ -72,7 +72,7 @@ public class DBClient {
                     newSeat = new Seat(row, column, price, purchased, firstName, token);
                 }
                 else if(!firstName.isBlank()) {
-//                    logger.warn("Seat was assigned first name but does not have token!");
+                    logger.warn("Seat was assigned a first name, but was not assigned a token!");
                     newSeat = new Seat(row, column, price, purchased, firstName, "");
                 }
                 else {
