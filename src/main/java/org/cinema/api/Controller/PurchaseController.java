@@ -29,6 +29,7 @@ public class PurchaseController {
         Seat currentSeat = cinemaService.getSeat(seat.getRow(), seat.getColumn());
         if (currentSeat.isPurchased()) throw new AlreadyPurchasedException("The ticket has been already purchased!");
 
+        currentSeat.setCustomerFirstName(seat.getCustomerFirstName());
         TicketDTO ticket = cinemaService.setPurchased(currentSeat);
         return new ResponseEntity<>(ticket, HttpStatus.OK);
     }

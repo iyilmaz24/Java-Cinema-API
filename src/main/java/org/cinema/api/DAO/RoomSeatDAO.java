@@ -6,17 +6,17 @@ import org.cinema.api.Exception.IncorrectPasswordException;
 import org.cinema.api.Model.Room;
 import org.cinema.api.Model.Seat;
 import org.cinema.api.Util.DB_Creator;
+import org.springframework.stereotype.Repository;
 import org.sqlite.SQLiteDataSource;
 
 import java.util.List;
 
-
+@Repository
 public class RoomSeatDAO {
 
-    private static final String url = "jdbc::sqlite:src/main/resources/database";
+    private static final String url = "jdbc:sqlite:./src/main/resources/database/cinema_api.db";
 
     private static final String GET_STATISTICS = "SELECT * FROM statistics";
-//    private static final String GET_TOTAL_SEATS = "SELECT COUNT(*) AS total FROM cinema";
     private static final String INCREMENT_SALES = """
             UPDATE statistics SET sold_seats = sold_seats + 1, available_seats = available_seats - 1;
              total_revenue = total_revenue + %d, total_seats = (SELECT COUNT(*) AS total FROM cinema);""";
@@ -25,12 +25,14 @@ public class RoomSeatDAO {
              total_revenue = total_revenue - %d, total_seats = (SELECT COUNT(*) AS total FROM cinema);""";
 
     private static final String SELECT_ALL = "SELECT * FROM cinema";
-    private static final String SELECT_BY_TOKEN = "SELECT * FROM cinema WHERE uuid = %s";
-    private static final String SELECT_BY_ROW_COLUMN = "SELECT * FROM cinema WHERE row = %d AND column = %d";
-    private static final String SELL = "UPDATE cinema SET purchased = TRUE, first_name = %s, uuid = %s, " +
-                                        "WHERE row = %d AND column = %d";
-    private static final String RESET = "UPDATE cinema SET purchased = FALSE, name = NULL, uuid = NULL, " +
-                                        "WHERE uuid = %s";
+    private static final String SELECT_BY_TOKEN = "SELECT * FROM cinema WHERE uuid = '%s'";
+    private static final String SELECT_BY_ROW_COLUMN = "SELECT * FROM cinema WHERE row_number = %d AND column_number = %d";
+    private static final String SELL = """
+                                        UPDATE cinema SET purchased = TRUE, first_name = '%s', uuid = '%s'
+                                        WHERE row_number = %d AND column_number = %d""";
+    private static final String RESET = """
+                                        UPDATE cinema SET purchased = FALSE, first_name = NULL, uuid = NULL
+                                        WHERE uuid = '%s'""";
 
     private final DBClient dbClient;
     private final DB_Creator dbCreator;

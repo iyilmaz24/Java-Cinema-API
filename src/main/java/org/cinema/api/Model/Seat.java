@@ -1,21 +1,18 @@
 package org.cinema.api.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.UUID;
 
-@JsonPropertyOrder( {"row", "column", "price"} )
+@JsonPropertyOrder( {"row", "column", "price", "purchased", "customerFirstName", "token"} )
 public class Seat {
 
     private int row;
     private int column;
     private int price;
-    @JsonIgnore private boolean purchased;
-    @JsonIgnore private String customerFirstName;
-    @JsonIgnore private String token;
+    private boolean purchased;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) private String customerFirstName;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) private String token;
 
     public Seat(int row, int column, int price) {
         this.row = row;

@@ -6,20 +6,16 @@ import java.util.UUID;
 
 public class Token {
 
-    private UUID token;
+    private String token;
 
-    public Token(UUID token) {
+    public Token(String token) {
         this.token = token;
     }
 
     public Token() {;}
 
-    public UUID getTokenUUID() {
+    public String getToken() {
         return token;
-    }
-
-    @JsonIgnore public String getTokenString() {
-        return token.toString();
     }
 
 }

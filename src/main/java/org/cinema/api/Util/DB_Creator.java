@@ -8,24 +8,26 @@ public class DB_Creator {
     private int COLUMNS = 10;
     private String PASSWORD = "secret_password";
 
-    private static final String url = "jdbc::sqlite:src/main/resources/database";
-
     private static final String CLEAR_STATS_DATABASE = "DROP TABLE IF EXISTS statistics";
     private static final String CREATE_STATS_DATABASE = """
             CREATE TABLE IF NOT EXISTS statistics (
             total_seats INTEGER, available_seats INTEGER,
-            sold_seats INTEGER, total_revenue INTEGER, );""";
-    private static final String SET_TOTAL_SEATS = "UPDATE statistics SET total_seats = %d";
+            sold_seats INTEGER, total_revenue INTEGER);""";
+    private static final String SET_TOTAL_SEATS = """
+            INSERT INTO statistics (total_seats, available_seats,
+            sold_seats, total_revenue) VALUES (%d, %d, %d, %d);""";
 
     private static final String CLEAR_CINEMA_DATABASE = "DROP TABLE IF EXISTS cinema";
     private static final String CREATE_CINEMA_DATABASE = """
             CREATE TABLE IF NOT EXISTS cinema (
             id VARCHAR(10) PRIMARY KEY,
-            row INTEGER, column INTEGER,
+            row_number INTEGER, column_number INTEGER,
             price INTEGER, purchased BOOLEAN,
             first_name VARCHAR(50), uuid VARCHAR(50) );""";
 
-    private static final String INSERT = "INSERT INTO cinema VALUES(%s, %d, %d, %d, FALSE, NULL, NULL)";
+    private static final String INSERT = """
+            INSERT INTO cinema (id, row_number, column_number, price, purchased, first_name, uuid)
+            VALUES (%s, %d, %d, %d, FALSE, NULL, NULL)""";
                                                                 // id, row, column, price
     public DB_Creator() {;}
 
@@ -45,13 +47,13 @@ public class DB_Creator {
         dbClient.runUpdate(CREATE_CINEMA_DATABASE);
         for (int row = 1; row <= ROWS; row++) {
             for (int col = 1; col <= COLUMNS; col++) {
-                String newId = row + "R" + col + "C"; // ex: 2nd row and 3rd col = 2R3C
+                String newId = "'" + row + "R" + col + "C" + "'"; // ex: 2nd row and 3rd col = 2R3C
                 dbClient.runUpdate(String.format(INSERT, newId, row, col, seatPriceGenerator(row)));
             }
         }
         dbClient.runUpdate(CLEAR_STATS_DATABASE);
         dbClient.runUpdate(CREATE_STATS_DATABASE);
-//        dbClient.runUpdate(String.format(SET_TOTAL_SEATS, ROWS*COLUMNS));
+        dbClient.runUpdate(String.format(SET_TOTAL_SEATS, ROWS*COLUMNS, 0, 0, 0));
     }
 
     private int seatPriceGenerator(int row) {

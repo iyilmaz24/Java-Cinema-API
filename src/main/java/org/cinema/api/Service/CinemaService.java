@@ -5,6 +5,7 @@ import org.cinema.api.DTO.StatsDTO;
 import org.cinema.api.DTO.TicketDTO;
 import org.cinema.api.Model.Room;
 import org.cinema.api.Model.Seat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,8 +18,9 @@ public class CinemaService {
 
     RoomSeatDAO cinema_room;
 
-    public CinemaService() {
-        RoomSeatDAO cinema_room = new RoomSeatDAO();
+    @Autowired
+    public CinemaService(RoomSeatDAO cinema_room) {
+        this.cinema_room = cinema_room;
     }
 
     public Seat getSeat(int row, int col) {

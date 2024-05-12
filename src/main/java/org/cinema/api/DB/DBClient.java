@@ -6,10 +6,7 @@ import org.cinema.api.Model.Room;
 import org.cinema.api.Model.Seat;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,18 +60,18 @@ public class DBClient {
             while (queryResults.next()) {
                 int row, column, price; Boolean purchased; String token, firstName;
 
-                row = queryResults.getInt("row"); column = queryResults.getInt("column");
+                row = queryResults.getInt("row_number"); column = queryResults.getInt("column_number");
                 price = queryResults.getInt("price"); purchased = queryResults.getBoolean("purchased");
                 token = queryResults.getString("uuid"); firstName = queryResults.getString("first_name");
 
                 Seat newSeat;
-                if(!token.isBlank()) {
-                    if(firstName.isBlank()) {
+                if(token != null && !token.isBlank()) {
+                    if(firstName == null || firstName.isBlank()) {
                         firstName = ""; // customer first name not required when purchasing a ticket/seat
                     }
                     newSeat = new Seat(row, column, price, purchased, firstName, token);
                 }
-                else if(!firstName.isBlank()) {
+                else if(firstName != null && !firstName.isBlank()) {
                     logger.warn("Seat was assigned a first name, but was not assigned a token!");
                     newSeat = new Seat(row, column, price, purchased, firstName, "");
                 }
@@ -96,11 +93,6 @@ public class DBClient {
         try(Connection connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
         ) {
-//            ResultSet queryResults = statement.executeQuery(getTotalSeatsSQLString);
-//            queryResults.next();
-//
-//            int totalSeats = queryResults.getInt("total");
-
             ResultSet queryResults = statement.executeQuery(sqlString);
             queryResults.next();
 

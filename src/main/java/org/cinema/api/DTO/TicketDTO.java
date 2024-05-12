@@ -17,7 +17,7 @@ public class TicketDTO {
     @JsonProperty("ticket") private Seat ticket;
 
     public TicketDTO(Seat seat, UUID token) { // for use in purchase, to send assigned UUID
-        this.ticket = new Seat(seat.getRow(), seat.getColumn(), seat.getPrice());
+        this.ticket = new Seat(seat.getRow(), seat.getColumn(), seat.getPrice(), seat.isPurchased());
         this.token = token;
     }
 
