@@ -6,9 +6,7 @@ import org.cinema.api.Exception.IncorrectPasswordException;
 import org.cinema.api.Model.Room;
 import org.cinema.api.Model.Seat;
 import org.cinema.api.DB.DB_Creator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.sqlite.SQLiteDataSource;
 
 import java.util.List;
@@ -21,11 +19,11 @@ public class RoomSeatDAO {
 
     private static final String GET_STATISTICS = "SELECT * FROM statistics";
     private static final String INCREMENT_SALES = """
-            UPDATE statistics SET sold_seats = sold_seats + 1, available_seats = available_seats - 1;
-             total_revenue = total_revenue + %d, total_seats = (SELECT COUNT(*) AS total FROM cinema);""";
+            UPDATE statistics SET sold_seats = sold_seats + 1, available_seats = available_seats - 1,
+             total_revenue = total_revenue + %d;""";
     private static final String DECREMENT_SALES = """
-            UPDATE statistics SET sold_seats = sold_seats - 1, available_seats = available_seats + 1;
-             total_revenue = total_revenue - %d, total_seats = (SELECT COUNT(*) AS total FROM cinema);""";
+            UPDATE statistics SET sold_seats = sold_seats - 1, available_seats = available_seats + 1,
+             total_revenue = total_revenue - %d;""";
 
     private static final String SELECT_ALL = "SELECT * FROM cinema";
     private static final String SELECT_BY_TOKEN = "SELECT * FROM cinema WHERE uuid = '%s'";
@@ -40,12 +38,11 @@ public class RoomSeatDAO {
     private final DBClient dbClient;
     private final DB_Creator dbCreator;
 
-    @Autowired
-    public RoomSeatDAO(PlatformTransactionManager transactionManager) {
+    public RoomSeatDAO() {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl(url);
 
-        dbClient = new DBClient(dataSource, transactionManager);
+        dbClient = new DBClient(dataSource);
         dbCreator = new DB_Creator(5, 5); // rows and columns, default is 10 x 10
         dbCreator.initializeDB(dbClient);
         dbCreator.setPassword("secret"); // set password for '/stats', default is 'secret_password'
@@ -63,12 +60,14 @@ public class RoomSeatDAO {
         return dbClient.selectOne(String.format(SELECT_BY_ROW_COLUMN, row, column));
     }
 
-    public void sellSeatByRowColumn (String firstName, String uuid, int row, int column) {
-        dbClient.runUpdate(String.format(SELL, firstName, uuid, row, column), INCREMENT_SALES);
+    public void sellSeatByRowColumn (Seat seat) {
+        dbClient.runUpdate(
+                String.format(SELL, seat.getCustomerFirstName(), seat.getToken(), seat.getRow(), seat.getColumn()),
+                String.format(INCREMENT_SALES, seat.getPrice()));
     }
 
-    public void refundSeatByToken(String token) {
-        dbClient.runUpdate(String.format(RESET, token), DECREMENT_SALES);
+    public void refundSeat(Seat seat) {
+        dbClient.runUpdate(String.format(RESET, seat.getToken()), String.format(DECREMENT_SALES, seat.getPrice()));
     }
 
     public Room getRoomInfo() {

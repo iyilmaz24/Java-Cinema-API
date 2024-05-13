@@ -19,6 +19,8 @@ public class StatsDTO {
         this.revenue = revenue;
     }
 
+    private StatsDTO() {;} // for use by spring-boot
+
     public int getTotalSeats() {
         return totalSeats;
     }

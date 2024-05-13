@@ -9,6 +9,8 @@ public class Token {
         this.token = token;
     }
 
+    private Token () {;} // for use by spring-boot
+
     public String getToken() {
         return token;
     }

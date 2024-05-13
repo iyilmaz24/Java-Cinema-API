@@ -25,7 +25,7 @@ public class ReturnController {
     public ResponseEntity<TicketDTO> getReturn(@RequestBody Token token) {
         Seat foundSeat = cinemaService.findByToken(token.getToken());
 
-        cinemaService.refundSeatByToken(foundSeat.getToken());
+        cinemaService.refundSeat(foundSeat);
         return new ResponseEntity<>(new TicketDTO(foundSeat), HttpStatus.OK);
     }
 

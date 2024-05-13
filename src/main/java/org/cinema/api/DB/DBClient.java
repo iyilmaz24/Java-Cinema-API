@@ -13,22 +13,16 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 
 public class DBClient {
 
     private final Logger logger;
     private final DataSource dataSource;
-    private final PlatformTransactionManager transactionManager;
 
-    public DBClient(DataSource dataSource, PlatformTransactionManager transactionManager) {
+    public DBClient(DataSource dataSource) {
         this.dataSource = dataSource;
         this.logger = LoggerFactory.getLogger(DBClient.class);
-        this.transactionManager = transactionManager;
     }
 
     public void runUpdate (String sqlString) { // without transaction manager method signature
@@ -38,26 +32,38 @@ public class DBClient {
             statement.executeUpdate(sqlString);
         }
         catch (Exception e) {
-            logger.error("Error in DBClient runUpdate(< {} >): {}", sqlString, e.getMessage());
-            throw new RuntimeException("Request unsuccessful, error encountered: " + e.getMessage());
+            logger.error("Error in DBClient runUpdate('{}'): {}", sqlString, e.getMessage());
+            throw new RuntimeException("Request unsuccessful, error encountered");
         }
     }
 
     public void runUpdate (String sqlString1, String sqlString2) { // with transaction manager method signature
-        TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
-        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+        Statement statement = null; Connection connection = null;
+        try {
+            connection = dataSource.getConnection(); statement = connection.createStatement();
+            connection.setAutoCommit(false);
 
-        try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement()
-        ) {
             statement.executeUpdate(sqlString1);
             statement.executeUpdate(sqlString2);
-            transactionManager.commit(transactionStatus); // close transaction, save changes
+            connection.commit(); // close transaction, save changes
         }
         catch (Exception e) {
-            logger.error("Error in DB transaction: < {} > < {} > {}", sqlString1, sqlString2, e.getMessage());
-            transactionManager.rollback(transactionStatus); // rollback transaction, discard changes
-            throw new RuntimeException("Request unsuccessful, error encountered: " + e.getMessage());
+            logger.error("Error in DB transaction: <'{}'> <'{}'> {}", sqlString1, sqlString2, e.getMessage());
+            if(connection != null) {
+                try { connection.rollback();
+                } catch (SQLException sqlException) {
+                    logger.error("Error in DB transaction rollback: {}", sqlException.getMessage());
+                }
+            }
+            throw new RuntimeException("Request unsuccessful, error encountered");
+        }
+        finally {
+            try {
+                if(statement != null) statement.close();
+                if(connection != null) connection.close();
+            } catch (SQLException e) {
+                logger.error("Error in DB transaction clean-up: {}", e.getMessage());
+            }
         }
     }
 
@@ -65,8 +71,8 @@ public class DBClient {
         List<Seat> result = selectMultiple(sqlString); // call other DBClient method to gather data
         if(result.size() == 1) return result.get(0); // desired outcome, handle exceptions below
 
-        else if (result.isEmpty()) throw new NoResultsFoundException("No results found in search of database.");
-        else throw new IllegalStateException("Query returned more than one object");
+        else if (result.isEmpty()) throw new NoResultsFoundException("No results matched, please try again.");
+        else throw new IllegalStateException("More than one results matched, please try again.");
     }
 
     public List<Seat> selectMultiple (String sqlString) {
@@ -91,14 +97,16 @@ public class DBClient {
                     logger.warn("Seat was assigned a first name, but was not assigned a token!"); // token = required field
                     newSeat = new Seat(row, column, price, purchased, firstName, "");
                 }
-                else newSeat = new Seat(row, column, price, purchased); // if Seat Model has not been sold yet
+                else {
+                    newSeat = new Seat(row, column, price, purchased); // if Seat Model has not been sold yet
+                }
                 result.add(newSeat);
             }
             return result; // return list of created Seat Models after iterating ResultSet
         }
         catch (Exception e) {
-            logger.error("Error in DBClient selectMultiple: {}", e.getMessage());
-            throw new RuntimeException("Request unsuccessful, error encountered: " + e.getMessage());
+            logger.error("Error in DBClient selectMultiple: <'{}'> {}", sqlString, e.getMessage());
+            throw new RuntimeException("Request unsuccessful, error encountered");
         }
     }
 
@@ -111,10 +119,10 @@ public class DBClient {
                         queryResults.getInt("sold_seats"), queryResults.getInt("total_revenue"));
 
             logger.warn("Empty result set returned when getting statistics: {}", sqlString);
-            throw new NoResultsFoundException("No results found in search of database.");
+            throw new NoResultsFoundException("No results matched, please try again.");
         }
         catch (Exception e) {
-            logger.error("Error encountered getting statistics: {}", e.getMessage());
+            logger.error("Error encountered getting statistics: <'{}'> {}", sqlString, e.getMessage());
             throw new RuntimeException("Error encountered getting statistics: " + e.getMessage());
         }
     }
@@ -128,7 +136,7 @@ public class DBClient {
             return new Room(statistics, seats); // desired outcome, construct and return new Room Model
         }
         catch (Exception e) {
-            logger.error("Error encountered getting room information: {}", e.getMessage());
+            logger.error("Error encountered getting room information: <'{}'> <'{}'> {}", sqlStringStats, sqlStringSeats, e.getMessage());
             throw new RuntimeException("Error encountered getting room information: " + e.getMessage());
         }
     }

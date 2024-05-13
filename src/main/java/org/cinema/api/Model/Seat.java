@@ -10,8 +10,8 @@ public class Seat {
     private int column;
     private int price;
     private boolean purchased;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) private String customerFirstName;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY) private String token;
+    @JsonIgnore private String customerFirstName;
+    @JsonIgnore private String token;
 
     public Seat(int row, int column, int price) {
         this.row = row;
@@ -31,7 +31,11 @@ public class Seat {
         this.column = column;
         this.price = price;
         this.purchased = purchased;
+        this.customerFirstName = firstName;
+        this.token = token;
     }
+
+    private Seat() {;} // for use by spring-boot
 
     public int getRow() {
         return row;

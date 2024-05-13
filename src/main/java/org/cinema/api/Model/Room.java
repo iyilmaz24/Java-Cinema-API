@@ -22,6 +22,8 @@ public class Room {
         this.seats = seats.toArray(new Seat[this.totalSeats]);
     }
 
+    private Room() {;} // for use by spring-boot
+
     public int getId() {
         return id;
     }
