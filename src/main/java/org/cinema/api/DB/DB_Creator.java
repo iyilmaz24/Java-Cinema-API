@@ -1,5 +1,6 @@
 package org.cinema.api.DB;
 
+
 public class DB_Creator {
 
     private int ROWS = 10;
@@ -26,8 +27,9 @@ public class DB_Creator {
     private static final String INSERT = """
             INSERT INTO cinema (id, row_number, column_number, price, purchased, first_name, uuid)
             VALUES (%s, %d, %d, %d, FALSE, NULL, NULL)""";
-                                                                // id, row, column, price
-    public DB_Creator() {;}
+                // id, row, column, price
+
+    public DB_Creator() {;} // if using default row count, column count, and password
 
     public DB_Creator(int rows, int columns) {
         this.ROWS = rows; this.COLUMNS = columns;
@@ -51,7 +53,7 @@ public class DB_Creator {
         }
         dbClient.runUpdate(CLEAR_STATS_DATABASE);
         dbClient.runUpdate(CREATE_STATS_DATABASE);
-        dbClient.runUpdate(String.format(SET_TOTAL_SEATS, ROWS*COLUMNS, 0, 0, 0));
+        dbClient.runUpdate(String.format(SET_TOTAL_SEATS, ROWS*COLUMNS, ROWS*COLUMNS, 0, 0));
     }
 
     private int seatPriceGenerator(int row) {

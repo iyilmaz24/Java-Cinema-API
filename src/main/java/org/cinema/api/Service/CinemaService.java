@@ -8,10 +8,9 @@ import org.cinema.api.Model.Seat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
-
 import static java.util.UUID.randomUUID;
+
 
 @Service
 public class CinemaService {
@@ -29,7 +28,7 @@ public class CinemaService {
 
     public TicketDTO setPurchased(Seat seat) {
         UUID newToken = randomUUID();
-        seat.setToken(String.valueOf(newToken)); seat.setPurchased();
+        seat.setToken(String.valueOf(newToken)); seat.setPurchased(true);
 
         cinema_room.sellSeatByRowColumn(seat.getCustomerFirstName(), String.valueOf(newToken), seat.getRow(), seat.getColumn());
         return new TicketDTO(seat, newToken); // calls the 2 arg purchase-specific constructor

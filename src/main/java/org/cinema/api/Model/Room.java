@@ -1,13 +1,12 @@
 package org.cinema.api.Model;
 
 import org.cinema.api.DTO.StatsDTO;
-import org.cinema.api.Exception.IncorrectTokenException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.util.*;
+import java.util.List;
+
 
 @JsonPropertyOrder( {"totalSeats", "availableSeats", "seats"} )
 public class Room {

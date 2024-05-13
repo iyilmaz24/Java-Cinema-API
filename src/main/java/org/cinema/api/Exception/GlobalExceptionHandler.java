@@ -9,6 +9,7 @@ import org.springframework.web.server.MethodNotAllowedException;
 
 import java.sql.SQLException;
 
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 

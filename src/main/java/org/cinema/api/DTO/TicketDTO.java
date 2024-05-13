@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.UUID;
 
+
 @JsonPropertyOrder( {"token", "ticket" } )
 public class TicketDTO {
 
@@ -24,7 +25,5 @@ public class TicketDTO {
     public TicketDTO(Seat seat) { // for use in return, sending of UUID not applicable
         this.ticket = new Seat(seat.getRow(), seat.getColumn(), seat.getPrice());
     }
-
-    public TicketDTO() {;}
 
 }

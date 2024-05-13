@@ -8,13 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/stats")
 public class StatsController {
 
-    CinemaService cinemaService;
+    private final CinemaService cinemaService;
 
     @Autowired
     public StatsController(CinemaService cinemaService) {
@@ -24,7 +23,7 @@ public class StatsController {
     @PostMapping("")
     public ResponseEntity<StatsDTO> stats(@RequestBody String password) { // self-handle blank/null
         if(password == null || password.isBlank()) throw new IncorrectPasswordException("The password is not provided!");
-        return new ResponseEntity<>(this.cinemaService.getStats(password), HttpStatus.OK);
+        return new ResponseEntity<>(cinemaService.getStats(password), HttpStatus.OK);
     }
 
 }

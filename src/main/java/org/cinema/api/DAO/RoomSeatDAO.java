@@ -7,12 +7,12 @@ import org.cinema.api.Model.Room;
 import org.cinema.api.Model.Seat;
 import org.cinema.api.DB.DB_Creator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.sqlite.SQLiteDataSource;
 
 import java.util.List;
+
 
 @Repository
 public class RoomSeatDAO {
@@ -48,7 +48,7 @@ public class RoomSeatDAO {
         dbClient = new DBClient(dataSource, transactionManager);
         dbCreator = new DB_Creator(5, 5); // rows and columns, default is 10 x 10
         dbCreator.initializeDB(dbClient);
-        dbCreator.setPassword("secret"); // password, default is 'secret_password'
+        dbCreator.setPassword("secret"); // set password for '/stats', default is 'secret_password'
     }
 
     public List<Seat> getAllSeats() {

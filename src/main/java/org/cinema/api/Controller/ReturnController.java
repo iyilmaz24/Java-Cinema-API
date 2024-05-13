@@ -1,6 +1,5 @@
 package org.cinema.api.Controller;
 
-import org.cinema.api.Exception.IncorrectTokenException;
 import org.cinema.api.Model.Seat;
 import org.cinema.api.Model.Token;
 import org.cinema.api.DTO.TicketDTO;
@@ -10,13 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/return")
 public class ReturnController {
 
-    CinemaService cinemaService;
+    private final CinemaService cinemaService;
 
     @Autowired
     public ReturnController(CinemaService cinemaService) {
@@ -26,10 +24,9 @@ public class ReturnController {
     @PostMapping("")
     public ResponseEntity<TicketDTO> getReturn(@RequestBody Token token) {
         Seat foundSeat = cinemaService.findByToken(token.getToken());
-        TicketDTO ticket = new TicketDTO(foundSeat);
 
         cinemaService.refundSeatByToken(foundSeat.getToken());
-        return new ResponseEntity<>(ticket, HttpStatus.OK);
+        return new ResponseEntity<>(new TicketDTO(foundSeat), HttpStatus.OK);
     }
 
 }
