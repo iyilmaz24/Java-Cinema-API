@@ -1,6 +1,4 @@
-package org.cinema.api.Util;
-
-import org.cinema.api.DB.DBClient;
+package org.cinema.api.DB;
 
 public class DB_Creator {
 

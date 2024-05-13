@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.MethodNotAllowedException;
 
+import java.sql.SQLException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -30,6 +32,13 @@ public class GlobalExceptionHandler {
 
         ErrorObject error = new ErrorObject(HttpStatus.BAD_REQUEST, ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler( {DatabaseException.class} )
+    public ResponseEntity<ErrorObject> handleDatabaseExceptions(SQLException ex) {
+
+        ErrorObject error = new ErrorObject(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

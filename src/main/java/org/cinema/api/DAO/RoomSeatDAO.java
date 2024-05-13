@@ -5,8 +5,11 @@ import org.cinema.api.DTO.StatsDTO;
 import org.cinema.api.Exception.IncorrectPasswordException;
 import org.cinema.api.Model.Room;
 import org.cinema.api.Model.Seat;
-import org.cinema.api.Util.DB_Creator;
+import org.cinema.api.DB.DB_Creator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.sqlite.SQLiteDataSource;
 
 import java.util.List;
@@ -37,11 +40,12 @@ public class RoomSeatDAO {
     private final DBClient dbClient;
     private final DB_Creator dbCreator;
 
-    public RoomSeatDAO() {
+    @Autowired
+    public RoomSeatDAO(PlatformTransactionManager transactionManager) {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl(url);
 
-        dbClient = new DBClient(dataSource);
+        dbClient = new DBClient(dataSource, transactionManager);
         dbCreator = new DB_Creator(5, 5); // rows and columns, default is 10 x 10
         dbCreator.initializeDB(dbClient);
         dbCreator.setPassword("secret"); // password, default is 'secret_password'
@@ -60,11 +64,11 @@ public class RoomSeatDAO {
     }
 
     public void sellSeatByRowColumn (String firstName, String uuid, int row, int column) {
-        dbClient.runUpdate(String.format(SELL, firstName, uuid, row, column));
+        dbClient.runUpdate(String.format(SELL, firstName, uuid, row, column), INCREMENT_SALES);
     }
 
     public void refundSeatByToken(String token) {
-        dbClient.runUpdate(String.format(RESET, token));
+        dbClient.runUpdate(String.format(RESET, token), DECREMENT_SALES);
     }
 
     public Room getRoomInfo() {

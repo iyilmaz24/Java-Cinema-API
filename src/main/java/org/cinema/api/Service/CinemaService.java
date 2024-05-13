@@ -24,9 +24,6 @@ public class CinemaService {
     }
 
     public Seat getSeat(int row, int col) {
-//        if(row > cinema_room.getRowCount() || col > cinema_room.getColCount()) {
-//            throw new InvalidIndexException("The number of a row or a column is out of bounds!");
-//        }
         return cinema_room.getSeatByRowColumn(row, col);
     }
 
