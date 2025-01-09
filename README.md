@@ -90,4 +90,4 @@ The API exposes several endpoints:
 ## Configuration
 The database is configured using a SQLite database file located at `src/main/resources/database/cinema_api.db`.  The default database schema is created upon application startup. The default admin password for `/stats` endpoint is "secret".  You can change this by modifying the `DB_Creator` class. The default room size is 5x5 rows and columns; you can change this as well in `DB_Creator` class.
 
-*Made with [Etchr](https://etchr.dev)*
+*Made with [Etchr]([https://etchr.dev](https://readme-generator-peach.vercel.app/))*
